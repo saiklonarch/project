@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Standard Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 250px;
+            background-color: #333;
+            transform: translateX(-250px);
+            transition: transform 0.3s ease;
+            padding-top: 60px; /* Add padding to avoid overlap */
+        }
+        .menu a {
+            display: block;
+            color: white;
+            padding: 16px;
+            text-decoration: none;
+        }
+        .menu a:hover {
+            background-color: #575757;
+        }
+        .menu-toggle {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            font-size: 30px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        .menu-toggle:hover {
+            color: #575757;
+        }
+        .calculator {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .calculator input {
+            width: 100%;
+            height: 40px;
+            text-align: right;
+            margin-bottom: 10px;
+            font-size: 18px;
+            padding: 5px;
+        }
+        .calculator .buttons {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .calculator button {
+            width: 23%;
+            height: 40px;
+            margin: 1%;
+            font-size: 18px;
+        }
+        .calculator .operations {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .calculator .operations button {
+            width: 23%;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu-toggle">&#9776;</div>
+    <div class="menu" id="menu">
+        <a href="#">Standard</a>
+        <a href="#">Scientific</a>
+        <a href="#">Currency Converter</a>
+    </div>
+    <div class="calculator" id="standard-calculator">
+        <input type="text" id="full-operation" disabled>
+        <input type="text" id="display" disabled>
+        <div class="operations">
+            <button onclick="setOperation('+')">+</button>
+            <button onclick="setOperation('-')">-</button>
+            <button onclick="setOperation('*')">*</button>
+            <button onclick="setOperation('/')">/</button>
+        </div>
+        <div class="buttons">
+            <button onclick="appendNumber('1')">1</button>
+            <button onclick="appendNumber('2')">2</button>
+            <button onclick="appendNumber('3')">3</button>
+            <button onclick="appendNumber('4')">4</button>
+            <button onclick="appendNumber('5')">5</button>
+            <button onclick="appendNumber('6')">6</button>
+            <button onclick="appendNumber('7')">7</button>
+            <button onclick="appendNumber('8')">8</button>
+            <button onclick="appendNumber('9')">9</button>
+            <button onclick="appendNumber('0')">0</button>
+            <button onclick="clearDisplay()">C</button>
+            <button onclick="calculate()">=</button>
+        </div>
+    </div>
+    <div class="calculator" id="scientific-calculator" style="display: none;">
+        <input type="text" id="sci-full-operation" disabled>
+        <input type="text" id="sci-display" disabled>
+        <div class="operations">
+            <button onclick="setSciOperation('+')">+</button>
+            <button onclick="setSciOperation('-')">-</button>
+            <button onclick="setSciOperation('*')">*</button>
+            <button onclick="setSciOperation('/')">/</button>
+            <button onclick="setSciOperation('^')">^</button>
+            <button onclick="setSciOperation('sqrt')">√</button>
+        </div>
+        <div class="buttons">
+            <button onclick="appendSciNumber('1')">1</button>
+            <button onclick="appendSciNumber('2')">2</button>
+            <button onclick="appendSciNumber('3')">3</button>
+            <button onclick="appendSciNumber('4')">4</button>
+            <button onclick="appendSciNumber('5')">5</button>
+            <button onclick="appendSciNumber('6')">6</button>
+            <button onclick="appendSciNumber('7')">7</button>
+            <button onclick="appendSciNumber('8')">8</button>
+            <button onclick="appendSciNumber('9')">9</button>
+            <button onclick="appendSciNumber('0')">0</button>
+            <button onclick="clearSciDisplay()">C</button>
+            <button onclick="calculateSci()">=</button>
+        </div>
+    </div>
+    <script>
+        let display = document.getElementById('display');
+        let fullOperation = document.getElementById('full-operation');
+        let currentOperation = null;
+        let firstOperand = null;
+
+        function appendNumber(number) {
+            display.value += number;
+            fullOperation.value += number;
+        }
+
+        function setOperation(operation) {
+            firstOperand = parseFloat(display.value);
+            currentOperation = operation;
+            display.value = '';
+            fullOperation.value += ' ' + operation + ' ';
+        }
+
+        function calculate() {
+            let secondOperand = parseFloat(display.value);
+            let result;
+            switch (currentOperation) {
+                case '+':
+                    result = firstOperand + secondOperand;
+                    break;
+                case '-':
+                    result = firstOperand - secondOperand;
+                    break;
+                case '*':
+                    result = firstOperand * secondOperand;
+                    break;
+                case '/':
+                    result = firstOperand / secondOperand;
+                    break;
+            }
+            display.value = result;
+            fullOperation.value = result;
+            currentOperation = null;
+            firstOperand = null;
+        }
+
+        function clearDisplay() {
+            display.value = '';
+            fullOperation.value = '';
+            currentOperation = null;
+            firstOperand = null;
+        }
+
+        let sciDisplay = document.getElementById('sci-display');
+        let sciFullOperation = document.getElementById('sci-full-operation');
+        let sciCurrentOperation = null;
+        let sciFirstOperand = null;
+
+        function appendSciNumber(number) {
+            sciDisplay.value += number;
+            sciFullOperation.value += number;
+        }
+
+        function setSciOperation(operation) {
+            sciFirstOperand = parseFloat(sciDisplay.value);
+            sciCurrentOperation = operation;
+            sciDisplay.value = '';
+            sciFullOperation.value += ' ' + operation + ' ';
+        }
+
+        function calculateSci() {
+            let sciSecondOperand = parseFloat(sciDisplay.value);
+            let sciResult;
+            switch (sciCurrentOperation) {
+                case '+':
+                    sciResult = sciFirstOperand + sciSecondOperand;
+                    break;
+                case '-':
+                    sciResult = sciFirstOperand - sciSecondOperand;
+                    break;
+                case '*':
+                    sciResult = sciFirstOperand * sciSecondOperand;
+                    break;
+                case '/':
+                    sciResult = sciFirstOperand / sciSecondOperand;
+                    break;
+                case '^':
+                    sciResult = Math.pow(sciFirstOperand, sciSecondOperand);
+                    break;
+                case 'sqrt':
+                    sciResult = Math.sqrt(sciFirstOperand);
+                    break;
+            }
+            sciDisplay.value = sciResult;
+            sciFullOperation.value = sciResult;
+            sciCurrentOperation = null;
+            sciFirstOperand = null;
+        }
+
+        function clearSciDisplay() {
+            sciDisplay.value = '';
+            sciFullOperation.value = '';
+            sciCurrentOperation = null;
+            sciFirstOperand = null;
+        }
+
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            const menu = document.getElementById('menu');
+            if (menu.style.transform === 'translateX(0px)') {
+                menu.style.transform = 'translateX(-250px)';
+            } else {
+                menu.style.transform = 'translateX(0px)';
+            }
+        });
+
+        document.querySelectorAll('.menu a').forEach(function(link) {
+            link.addEventListener('click', function() {
+                document.getElementById('standard-calculator').style.display = 'none';
+                document.getElementById('scientific-calculator').style.display = 'none';
+                if (this.textContent === 'Standard') {
+                    document.getElementById('standard-calculator').style.display = 'block';
+                } else if (this.textContent === 'Scientific') {
+                    document.getElementById('scientific-calculator').style.display = 'block';
+                }
+            });
+        });
+    </script>
